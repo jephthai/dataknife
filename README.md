@@ -209,11 +209,11 @@ Encrypt/Decrypt
 
 These modes encrypt or decrypt content.  It's not the most useful ever, because it's restricted to the ciphers supported by the 'crypt' gem.  Also, I believe the only option is CBC, so if you need to decrypt some random thing you found, you'll still have to write it up yourself.  But, for a handy little one-liner:
 
-$ echo "The quick brown fox" | dk encrypt blowfish s3cr3t | dk hex e
-681db9e3550e2689eaae50de3e223d398aac40d571720a363d85c21676669f31
-$ echo 681db9e3550e2689eaae50de3e223d398aac40d571720a363d85c21676669f31 \
-  | dk hex d | dk decrypt blowfish s3cr3t
-The quick brown fox
+    $ echo "The quick brown fox" | dk encrypt blowfish s3cr3t | dk hex e
+    681db9e3550e2689eaae50de3e223d398aac40d571720a363d85c21676669f31
+    $ echo 681db9e3550e2689eaae50de3e223d398aac40d571720a363d85c21676669f31 \
+      | dk hex d | dk decrypt blowfish s3cr3t
+    The quick brown fox
 
 Note that we can make sure that this is really working with something like this:
 
