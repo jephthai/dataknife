@@ -14,9 +14,40 @@ Then make sure that the "dataknife.rb" file is executable and link it somewhere 
 
     $ chmod +x dataknife/dataknife.rb
     $ ln -s `pwd`/dataknife/dataknife.rb ~/bin/dk
+    
+Usage Statement
+---------------
 
-Usage
-=====
+    $ dk
+    
+    ------------------------------------------------------------------------
+        Data Knife - by Josh Stone (yakovdk@gmail.com) - (C) 2014
+    ------------------------------------------------------------------------
+    
+    usage: /Users/jstone/bin/dk <cmd>
+    
+      Most plugins read from standard input and print the result
+      on the standard output stream.
+    
+      base64 [(e|d)]       Base64 decodes input (encode if 'e' parameter provided)
+      bytes                Counts bytes in data blob
+      chex                 Colorized hex-dump of input
+      col C1 [C2] ...      Print indicated column(s) from input lines
+      colsep S C1 [C2] ... Print indicated column(s) from input lines w/ separator
+      decrypt algo key     Decrypt input with indicated cipher ('list' to enum) and key
+      encrypt algo key     Encrypt input with indicated cipher ('list' to enum) and key
+      hex (e|d)            HEX encoded input ('e'=encode, 'd'=decode)
+      intersect f1 [f2]... Print intersection of provided files / input
+      ips                  Print all IP addresses detected in the input
+      lines                Counts lines in data blob
+      mean                 Tokenizes the input and calculates the numeric mean
+      shannon              Calculates the Shannon entropy of the input
+      tokens [u]           Returns all whitespace-delimited tokens in input
+      unbin [.]            Remove non-printable characters from the input
+      urlencode (e|d)      URL-decodes input ('e'=encode, 'd'=decode)
+
+More Details / Examples
+=======================
 
 All of the examples provided here assume that you have dataknife accessible in your $PATH as the command "dk".  
 
@@ -178,11 +209,11 @@ Encrypt/Decrypt
 
 These modes encrypt or decrypt content.  It's not the most useful ever, because it's restricted to the ciphers supported by the 'crypt' gem.  Also, I believe the only option is CBC, so if you need to decrypt some random thing you found, you'll still have to write it up yourself.  But, for a handy little one-liner:
 
-$ echo "The quick brown fox" | dk encrypt blowfish s3cr3t | dk hex e
-681db9e3550e2689eaae50de3e223d398aac40d571720a363d85c21676669f31
-$ echo 681db9e3550e2689eaae50de3e223d398aac40d571720a363d85c21676669f31 \
-  | dk hex d | dk decrypt blowfish s3cr3t
-The quick brown fox
+    $ echo "The quick brown fox" | dk encrypt blowfish s3cr3t | dk hex e
+    681db9e3550e2689eaae50de3e223d398aac40d571720a363d85c21676669f31
+    $ echo 681db9e3550e2689eaae50de3e223d398aac40d571720a363d85c21676669f31 \
+      | dk hex d | dk decrypt blowfish s3cr3t
+    The quick brown fox
 
 Note that we can make sure that this is really working with something like this:
 
