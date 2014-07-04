@@ -38,7 +38,7 @@ Chex
 
 This is a Ruby port of a color hex-dump utility that I wrote some time ago.  It turns out that colorizing the output of a hexdump is very handy, as there are very distinctive patterns in many types of files.  For example, symbol tables in libraries look very different from executable code, which is also very different from plain text.  The `chex` plugin will show you a color hexdump similar to the following for the provided input:
 
-TODO
+![Screenshot of chex mode](https://raw.githubusercontent.com/jephthai/dataknife/master/docs/chex-of-sleep_png.png)
 
 Col
 ---
