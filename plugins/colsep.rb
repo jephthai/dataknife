@@ -19,7 +19,7 @@ module Dataknife
           sep = args[0]
           columns = args[1..-1].map {|i| i.to_i - 1}
           STDIN.each_line do |line|
-            fields = line.split(/#{sep}/)
+            fields = line.chomp.split(/#{sep}/)
             columns.each do |column|
               print fields[column] + " " if fields.length >= column
             end
