@@ -35,11 +35,14 @@ Usage Statement
       col C1 [C2] ...      Print indicated column(s) from input lines
       colsep S C1 [C2] ... Print indicated column(s) from input lines w/ separator
       decrypt algo key     Decrypt input with indicated cipher ('list' to enum) and key
+      desym                Remove any non-alphabetic symbols from the input
+      detag                Remove XML/HTML tags from the input
       encrypt algo key     Encrypt input with indicated cipher ('list' to enum) and key
       hex (e|d)            HEX encoded input ('e'=encode, 'd'=decode)
       intersect f1 [f2]... Print intersection of provided files / input
       ips                  Print all IP addresses detected in the input
       lines                Counts lines in data blob
+      maskips              Anonymize IP addresses from the input
       mean                 Tokenizes the input and calculates the numeric mean
       shannon              Calculates the Shannon entropy of the input
       tokens [u]           Returns all whitespace-delimited tokens in input
@@ -223,3 +226,46 @@ Note that we can make sure that this is really working with something like this:
     7.999929192672373
 
 And no... it's not the fastest thing ever.  But it's somewhat handy.
+
+Maskips
+-------
+
+This mode will replace all identified IP addresses with "randomized" replacements.  The IPs are stored in a hierarchy of hashes so that once one particular IP is mapped to another, subsequent occurrences of that IP will be mapped to the same "randomized" value.  This is useful for sending someone redacted command output so you don't have to replace IP addresses yourself.
+
+As an interesting quirk of the method I used to do this, the resulting "randomized" addresses will generally be in each other's subnets.  This will not necessarily be "correct" when applying netmasks, but it will mean that all 192.168.*.* addresses will share a common first and second (and third where applicable) octet.  This may help you keep at least a little context in mind when you're reading the output.  Note that subnets larger than a /24 will probably get broken, and subnets smaller than /24 will possibly not make as much sense as IPs may move closer/farther from each other (or change order).
+
+So this:
+
+    $ ifconfig vmnet2
+    vmnet2: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+    	ether 00:50:56:c0:00:02 
+    	inet 192.168.159.1 netmask 0xffffff00 broadcast 192.168.159.255
+
+Becomes this (note the wonky broadcast -- I didn't say the output would make sense!):
+
+    $ ifconfig vmnet2 | dk maskips
+    vmnet2: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500
+    	ether 00:50:56:c0:00:02 
+    	inet 217.210.145.109 netmask 0xffffff00 broadcast 217.210.145.190
+
+EBCDIC
+------
+
+If you're working with stuff from an IBM Mainframe, you will want to decode EBCDIC.  I have added this module -- note that it works with the specific EBCDIC from the z/OS mainframe I was using.  There are different varieties of EBCDIC, so you may have to tweak the character map in this code if you have some other variant.  Here's an example of how it works:
+
+    atlantis-2:zos jstone$ head -n 4 /etc/passwd | dk ebcdic e | dk chex
+    0000000000 7b 7b 15 7b 40 e4 a2 85 99 40 c4 81 a3 81 82 81  [{{.{@....@......]
+    0000000010 a2 85 15 7b 40 15 7b 40 d5 96 a3 85 40 a3 88 81  [...{@.{@....@...]
+    0000000020 a3 40 a3 88 89 a2 40 86 89 93 85 40 89 a2 40 83  [.@....@....@..@.]
+    0000000030 96 95 a2 a4 93 a3 85 84 40 84 89 99 85 83 a3 93  [........@.......]
+    0000000040 a8 40 96 95 93 a8 40 a6 88 85 95 40 a3 88 85 40  [.@....@....@...@]
+    0000000050 a2 a8 a2 a3 85 94 40 89 a2 40 99 a4 95 95 89 95  [......@..@......]
+    0000000060 87 15                                            [..]
+    atlantis-2:zos jstone$ head -n 4 /etc/passwd | dk ebcdic e | dk ebcdic d | dk chex
+    0000000000 23 23 0a 23 20 55 73 65 72 20 44 61 74 61 62 61  [##.# User Databa]
+    0000000010 73 65 0a 23 20 0a 23 20 4e 6f 74 65 20 74 68 61  [se.# .# Note tha]
+    0000000020 74 20 74 68 69 73 20 66 69 6c 65 20 69 73 20 63  [t this file is c]
+    0000000030 6f 6e 73 75 6c 74 65 64 20 64 69 72 65 63 74 6c  [onsulted directl]
+    0000000040 79 20 6f 6e 6c 79 20 77 68 65 6e 20 74 68 65 20  [y only when the ]
+    0000000050 73 79 73 74 65 6d 20 69 73 20 72 75 6e 6e 69 6e  [system is runnin]
+    0000000060 67 0a                                            [g.]
