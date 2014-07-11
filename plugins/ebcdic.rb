@@ -50,13 +50,7 @@ module Dataknife
       end
 
       def replace(array, value, replacement)
-        array.map do |i|
-          if i == value
-            replacement
-          else
-            i
-          end
-        end
+        array.map {|i| i == value ? replacement : i }
       end
 
       def main(args)
