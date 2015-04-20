@@ -15,12 +15,19 @@ module Dataknife
       def main(args)
         dot = args.length == 1 and args[0] == "."
         begin
+          printspace = true
           while block = STDIN.sysread(1024)
             block.each_byte do |b|
               if (' '..'~').cover? b.chr
                 print b.chr
+                printspace = true
               else
-                print '.' if dot
+                if dot
+                  print '.'
+                else
+                  print " " if printspace
+                  printspace = false
+                end
               end
             end
           end

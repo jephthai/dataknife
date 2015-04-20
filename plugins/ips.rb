@@ -13,9 +13,26 @@ module Dataknife
       end
 
       def main(args)
-        unique = args.length == 1 and args[0] == 'd'
+        unique = false
+        infile = STDIN
+        if args.length >= 1
+          args.each do |arg|
+            case arg
+            when 'd'
+              unique = true
+            else
+              if File.exists? arg
+                infile = open(arg)
+              else
+                puts "ERROR: file '#{arg}' doesn't exist!"
+                exit 1
+              end
+            end
+          end
+        end
+
         set = Set.new
-        STDIN.each_line do |line|
+        infile.each_line do |line|
           line.scan(/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/).each do |ip|
             if ip.split(/\./).all? 
               if unique

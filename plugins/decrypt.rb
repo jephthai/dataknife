@@ -47,7 +47,9 @@ module Dataknife
         else
           if args[0] == "xor"
             require 'crypt/stringxor'
-            print STDIN.read ^ args[1]
+            input = STDIN.read
+            dups  = (input.length / args[1].length) + 1
+            print input ^ (args[1] * dups)
           else
             crypt = getcrypt args[0], args[1]
             print crypt.decrypt_string(STDIN.read)

@@ -5,6 +5,7 @@ require 'open-uri'
 module Dataknife
   module Plugins
     class URLEncodePlugin < Dataknife::Plugins::DefaultPlugin
+
       def initialize
         super
         @help = "URL-decodes input ('e'=encode, 'd'=decode)"

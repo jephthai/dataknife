@@ -23,4 +23,3 @@ module Dataknife
   end
 end
 
-
