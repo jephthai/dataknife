@@ -46,10 +46,13 @@ module Dataknife
           printsupported
         else
           if args[0] == "xor"
-            require 'crypt/stringxor'
+            require 'xorcist'
+	    puts("XORCIST in use")
             input = STDIN.read
-            dups  = (input.length / args[1].length) + 1
-            print input ^ (args[1] * dups)
+	    cipher = Xorcist.xor(input, args[1] * (input.length / args[1].length))
+	    print cipher
+            # dups  = (input.length / args[1].length) + 1
+            # print input ^ (args[1] * dups)
           else
             crypt = getcrypt args[0], args[1]
             print crypt.decrypt_string(STDIN.read)

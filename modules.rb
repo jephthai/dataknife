@@ -12,8 +12,8 @@ module Dataknife
       Dir.glob("#{dir}/*.rb") do |plugin|
         begin
           load plugin
-        rescue
-          puts "error loading plugin #{plugin}"
+        rescue Exception => e
+          puts "error loading plugin #{plugin} #{e}"
         end
       end
     end

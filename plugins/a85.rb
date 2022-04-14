@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'Ascii85'
-
 module Dataknife
   module Plugins
     class A85Plugin < Dataknife::Plugins::DefaultPlugin
@@ -13,10 +11,16 @@ module Dataknife
       end
 
       def main(args)
+	require 'ascii85'
+
+        data = STDIN.read
+        data = "<~" + data unless data.start_with?("<~")
+        data = data + "~>" unless data.end_with?("<~") 
+
         if args.length == 1 and args[0] == "e"
-          print Ascii85::encode(STDIN.read)
+          print Ascii85::encode(data)
         else
-          print Ascii85::decode(STDIN.read)
+          print Ascii85::decode(data)
         end
       end
     end
